@@ -1,28 +1,13 @@
+import os
 import logging
-from logging.handlers import RotatingFileHandler
+from dotenv import load_dotenv
 
-# Odoo connection settings
-ODOO_URL = "https://app.propanel.ma"
-ODOO_DB = ""
+# Load environment variables from .env file (if available)
+load_dotenv()
 
-# Configure logging
-log_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+# Odoo API configuration
+ODOO_URL = os.getenv("ODOO_URL", "https://app.propanel.ma")
 
-# Create handlers
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(log_formatter)
-
-webhook_file_handler = RotatingFileHandler("webhook.log", maxBytes=1048576, backupCount=3)
-webhook_file_handler.setFormatter(log_formatter)
-
-auth_file_handler = RotatingFileHandler("auth.log", maxBytes=1048576, backupCount=3)
-auth_file_handler.setFormatter(log_formatter)
-
-# Get the root logger
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-# Add handlers to logger
-logger.addHandler(console_handler)
-logger.addHandler(webhook_file_handler)
-logger.addHandler(auth_file_handler)
+# Logger setup
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("odoo_webhook")
