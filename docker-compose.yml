@@ -3,7 +3,7 @@ version: '3.8'
 services:
   webhook-server:
     build:
-      context: ./odoo-webhook-server
+      context: .
       dockerfile: Dockerfile
     container_name: odoo-webhook-server
     restart: unless-stopped
@@ -22,8 +22,8 @@ services:
       retries: 3
       start_period: 40s
     volumes:
-      - ./odoo-webhook-server/webhook.log:/app/webhook.log
-      - ./odoo-webhook-server/auth.log:/app/auth.log
+      - ./webhook.log:/app/webhook.log
+      - ./auth.log:/app/auth.log
     ports:
       - "8000:8000"
     networks:
