@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 
 from webhook.update_webhook import router as updates_router
 from webhook.webhook import router as webhook_router
+from webhook.smart_sync import router as smart_sync_router
 
 # ==========================
 # Initialize FastAPI
@@ -18,7 +19,7 @@ from webhook.webhook import router as webhook_router
 app = FastAPI(
     title="Odoo Webhook Server",
     version="2.0.0",
-    description="API for Odoo webhooks integration",
+    description="API for Odoo webhooks integration with Multi-User Smart Sync",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -59,8 +60,9 @@ app.add_middleware(SlowAPIMiddleware)
 # ==========================
 # Routers
 # ==========================
-app.include_router(updates_router)   # /api/v1/check-updates , /api/v1/cleanup
-app.include_router(webhook_router)   # /api/v1/webhook/events
+app.include_router(updates_router)      # /api/v1/check-updates , /api/v1/cleanup
+app.include_router(webhook_router)      # /api/v1/webhook/events
+app.include_router(smart_sync_router)   # /api/v2/sync/* (NEW - Smart Multi-User Sync)
 
 # ==========================
 # Health check
@@ -74,6 +76,11 @@ def root():
         "services": {
             "webhook": "active",
             "check_updates": "active",
-            "cleanup": "active"
+            "cleanup": "active",
+            "smart_sync": "active"  # NEW
+        },
+        "endpoints": {
+            "v1": ["/api/v1/webhook/events", "/api/v1/check-updates", "/api/v1/cleanup"],
+            "v2": ["/api/v2/sync/pull", "/api/v2/sync/state", "/api/v2/sync/reset"]
         }
     }
